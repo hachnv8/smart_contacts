@@ -1,8 +1,10 @@
 package org.example.smartcontacts.repository;
 
-import jakarta.transaction.Transactional;
 import org.example.smartcontacts.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,7 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Kiểm tra xem địa chỉ email đã tồn tại chưa
     boolean existsByEmail(String email);
 
-    @Transactional
-    void updatePasswordById(Long userId, String newPassword);
+    @Modifying
+    @Query("UPDATE User u SET u.password = :newPassword WHERE u.id = :userId")
+    void updatePasswordById(@Param("userId") long userId, @Param("newPassword") String newPassword);
+
+    // Các phương thức tìm kiếm hoặc tùy chỉnh khác nếu cần
 
 }
